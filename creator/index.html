@@ -582,7 +582,15 @@ previewName.style.textShadow =
 /* Создание страницы */
 
 createButton.addEventListener("click", async function () {
+function resetCreateButton() {
+    createButton.disabled = false;
+    createButton.textContent = "♥ СОЗДАТЬ СТРАНИЦУ ♥";
+}
 
+/* Срабатывает, когда пользователь возвращается назад */
+window.addEventListener("pageshow", function () {
+    resetCreateButton();
+});
 const name =
 nameInput.value.trim();
 
