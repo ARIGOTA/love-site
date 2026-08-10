@@ -3,419 +3,883 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOVE.exe</title>
+
+<title>LOVE.exe — Создай свою страницу</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+box-sizing: border-box;
+}
 
-    html, body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: #050005;
-        font-family: "Courier New", monospace;
-    }
+html {
+scroll-behavior: smooth;
+}
 
-    body {
-        position: relative;
-    }
+body {
+margin: 0;
+min-height: 100vh;
+background:
+radial-gradient(circle at 50% 20%, rgba(255,0,100,.18), transparent 35%),
+radial-gradient(circle at 20% 80%, rgba(255,40,120,.10), transparent 30%),
+#050005;
+color: #ffd5e4;
+font-family: "Courier New", monospace;
+overflow-x: hidden;
+}
 
-    /* Неоновый фон */
-    .background {
-        position: fixed;
-        inset: 0;
-        background:
-            radial-gradient(circle at center,
-                rgba(255, 0, 100, 0.16),
-                transparent 45%),
-            radial-gradient(circle at 20% 80%,
-                rgba(255, 20, 80, 0.08),
-                transparent 35%),
-            #050005;
-    }
+/* scanlines */
 
-    /* Консоль */
-    .console {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: min(850px, 90%);
-        text-align: center;
-        color: #ff4f91;
-        text-shadow:
-            0 0 5px #ff0055,
-            0 0 15px #ff0055,
-            0 0 30px rgba(255, 0, 100, 0.7);
-        z-index: 10;
-        pointer-events: none;
-    }
+body::after {
+content: "";
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 100;
+background:
+repeating-linear-gradient(
+to bottom,
+rgba(255,255,255,.012) 0px,
+rgba(255,255,255,.012) 1px,
+transparent 2px,
+transparent 4px
+);
+}
 
-    .title {
-        font-size: clamp(45px, 10vw, 100px);
-        font-weight: bold;
-        letter-spacing: 8px;
-        animation: pulse 2s infinite;
-    }
+/* navigation */
 
-    .subtitle {
-        margin-top: 15px;
-        font-size: clamp(12px, 2vw, 18px);
-        opacity: 0.8;
-    }
+.nav {
+width: min(1180px, 92%);
+margin: auto;
+height: 82px;
 
-    .terminal {
-        margin-top: 25px;
-        color: #ff8fba;
-        font-size: 13px;
-        line-height: 1.8;
-        opacity: 0.75;
-    }
+display: flex;
+align-items: center;
+justify-content: space-between;
 
-    .cursor {
-        display: inline-block;
-        width: 8px;
-        height: 15px;
-        background: #ff4f91;
-        animation: blink 0.8s infinite;
-    }
+position: relative;
+z-index: 20;
+}
 
-    /* Сердца */
-    .heart {
-        position: fixed;
-        bottom: -80px;
-        user-select: none;
-        pointer-events: none;
-        z-index: 5;
-        animation:
-            fly linear forwards,
-            glow 1.5s ease-in-out infinite alternate;
-    }
+.brand {
+color: #ff4f91;
+font-size: 22px;
+font-weight: bold;
+letter-spacing: 3px;
 
-    @keyframes fly {
-        0% {
-            transform:
-                translateY(0)
-                translateX(0)
-                rotate(0deg)
-                scale(0.4);
-            opacity: 0;
-        }
+text-shadow:
+0 0 8px #ff0055,
+0 0 20px rgba(255,0,85,.8);
+}
 
-        10% {
-            opacity: 1;
-        }
+.nav-button {
+text-decoration: none;
+color: #ffafd0;
 
-        50% {
-            transform:
-                translateY(-55vh)
-                translateX(var(--move))
-                rotate(var(--rotate))
-                scale(1);
-        }
+border: 1px solid rgba(255,80,150,.45);
+border-radius: 9px;
 
-        100% {
-            transform:
-                translateY(-120vh)
-                translateX(calc(var(--move) * -1))
-                rotate(calc(var(--rotate) * 2))
-                scale(1.3);
-            opacity: 0;
-        }
-    }
+padding: 10px 16px;
 
-    @keyframes glow {
-        from {
-            filter:
-                drop-shadow(0 0 3px #ff0055);
-        }
+background: rgba(255,0,100,.05);
 
-        to {
-            filter:
-                drop-shadow(0 0 15px #ff0055)
-                drop-shadow(0 0 30px #ff4f91);
-        }
-    }
+transition: .2s;
+}
 
-    @keyframes pulse {
-        0%, 100% {
-            transform: scale(1);
-            text-shadow:
-                0 0 5px #ff0055,
-                0 0 15px #ff0055,
-                0 0 30px #ff0055;
-        }
+.nav-button:hover {
+background: rgba(255,0,100,.15);
+box-shadow: 0 0 20px rgba(255,0,100,.25);
+}
 
-        50% {
-            transform: scale(1.04);
-            text-shadow:
-                0 0 10px #ff0055,
-                0 0 30px #ff0055,
-                0 0 60px #ff4f91;
-        }
-    }
+/* hero */
 
-    @keyframes blink {
-        50% {
-            opacity: 0;
-        }
-    }
+.hero {
+width: min(1180px, 92%);
+min-height: calc(100vh - 82px);
 
-    /* Сканлайны */
-    .scanlines {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 20;
-        background: repeating-linear-gradient(
-            to bottom,
-            rgba(255,255,255,0.015) 0px,
-            rgba(255,255,255,0.015) 1px,
-            transparent 2px,
-            transparent 4px
-        );
-    }
+margin: auto;
 
-    /* Мобильная версия */
-    max-width: 600px {
-        .title {
-            letter-spacing: 4px;
-        }
+display: grid;
+grid-template-columns: 1.05fr .95fr;
+align-items: center;
+gap: 60px;
 
-        .terminal {
-            font-size: 10px;
-        }
-    }
+position: relative;
+z-index: 10;
+
+padding: 40px 0 80px;
+}
+
+.status {
+color: #ff6da6;
+font-size: 13px;
+letter-spacing: 2px;
+margin-bottom: 20px;
+}
+
+.title {
+margin: 0;
+
+font-size: clamp(55px, 10vw, 115px);
+line-height: .9;
+
+color: #ff4f91;
+
+letter-spacing: 5px;
+
+text-shadow:
+0 0 10px #ff0055,
+0 0 30px #ff0055,
+0 0 70px rgba(255,0,100,.65);
+}
+
+.subtitle {
+margin-top: 28px;
+
+max-width: 650px;
+
+font-size: clamp(18px, 2.2vw, 26px);
+line-height: 1.45;
+
+color: #ffd3e3;
+}
+
+.description {
+max-width: 650px;
+
+margin-top: 18px;
+
+line-height: 1.8;
+
+color: #dba9bc;
+}
+
+.hero-actions {
+display: flex;
+flex-wrap: wrap;
+gap: 14px;
+
+margin-top: 32px;
+}
+
+.primary {
+text-decoration: none;
+
+padding: 16px 24px;
+
+border-radius: 10px;
+
+color: white;
+
+background:
+linear-gradient(
+90deg,
+#ff0055,
+#ff4f91
+);
+
+font-weight: bold;
+
+box-shadow:
+0 0 28px rgba(255,0,100,.35);
+
+transition: .2s;
+}
+
+.primary:hover {
+transform: translateY(-2px);
+box-shadow:
+0 0 40px rgba(255,0,100,.55);
+}
+
+.secondary {
+text-decoration: none;
+
+padding: 16px 24px;
+
+border-radius: 10px;
+
+border:
+1px solid rgba(255,80,150,.45);
+
+color: #ffb1cd;
+
+background:
+rgba(255,0,100,.05);
+
+transition: .2s;
+}
+
+.secondary:hover {
+background:
+rgba(255,0,100,.12);
+}
+
+/* preview */
+
+.preview-wrap {
+display: flex;
+justify-content: center;
+}
+
+.preview {
+width: min(430px, 100%);
+min-height: 540px;
+
+border-radius: 24px;
+
+border:
+1px solid rgba(255,80,150,.5);
+
+background:
+radial-gradient(circle at center, #3c001c, #090006 70%);
+
+box-shadow:
+0 0 55px rgba(255,0,100,.20);
+
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+
+text-align: center;
+
+padding: 35px;
+
+position: relative;
+overflow: hidden;
+}
+
+.preview::before {
+content: "";
+position: absolute;
+inset: 0;
+
+background:
+radial-gradient(circle at 50% 35%, rgba(255,80,150,.18), transparent 30%);
+}
+
+.preview-logo {
+position: relative;
+z-index: 2;
+
+color: #ff5d99;
+
+font-size: 36px;
+font-weight: bold;
+letter-spacing: 4px;
+
+text-shadow:
+0 0 10px #ff0055,
+0 0 25px #ff0055;
+}
+
+.preview-heart {
+position: relative;
+z-index: 2;
+
+font-size: 90px;
+margin: 30px 0 20px;
+
+animation: heartbeat 1.4s infinite;
+
+filter:
+drop-shadow(0 0 10px #ff0055)
+drop-shadow(0 0 25px #ff0055);
+}
+
+@keyframes heartbeat {
+0%,100% {
+transform: scale(1);
+}
+
+50% {
+transform: scale(1.15);
+}
+}
+
+.preview-name {
+position: relative;
+z-index: 2;
+
+font-size: 30px;
+color: #ff8db7;
+
+text-shadow:
+0 0 10px #ff0055;
+}
+
+.preview-message {
+position: relative;
+z-index: 2;
+
+margin-top: 20px;
+
+color: #ffd8e5;
+line-height: 1.7;
+}
+
+.preview-status {
+position: relative;
+z-index: 2;
+
+margin-top: 30px;
+
+font-size: 11px;
+opacity: .55;
+}
+
+/* features */
+
+.section {
+width: min(1180px, 92%);
+margin: auto;
+padding: 90px 0;
+position: relative;
+z-index: 10;
+}
+
+.section-title {
+text-align: center;
+color: #ff5f9c;
+font-size: clamp(30px, 5vw, 52px);
+margin-bottom: 45px;
+
+text-shadow:
+0 0 15px rgba(255,0,100,.5);
+}
+
+.features {
+display: grid;
+grid-template-columns:
+repeat(3, 1fr);
+
+gap: 18px;
+}
+
+.card {
+min-height: 220px;
+
+padding: 25px;
+
+border-radius: 16px;
+
+border:
+1px solid rgba(255,70,130,.35);
+
+background:
+rgba(20,0,12,.68);
+
+box-shadow:
+0 0 25px rgba(255,0,100,.08);
+}
+
+.card-icon {
+font-size: 36px;
+margin-bottom: 18px;
+}
+
+.card h3 {
+margin: 0 0 12px;
+color: #ff77aa;
+}
+
+.card p {
+margin: 0;
+
+line-height: 1.7;
+color: #cf9caf;
+}
+
+/* steps */
+
+.steps {
+display: grid;
+grid-template-columns:
+repeat(3, 1fr);
+
+gap: 20px;
+}
+
+.step {
+padding: 28px;
+
+border-top:
+1px solid rgba(255,80,150,.5);
+
+background:
+linear-gradient(
+to bottom,
+rgba(255,0,100,.05),
+transparent
+);
+}
+
+.step-number {
+color: #ff4f91;
+font-size: 13px;
+margin-bottom: 12px;
+}
+
+.step h3 {
+color: #ff9cbe;
+margin-top: 0;
+}
+
+.step p {
+color: #ca9bad;
+line-height: 1.7;
+}
+
+/* final CTA */
+
+.cta {
+width: min(900px, 92%);
+margin: 40px auto 100px;
+
+padding: 60px 30px;
+
+text-align: center;
+
+border:
+1px solid rgba(255,80,150,.45);
+
+border-radius: 22px;
+
+background:
+radial-gradient(
+circle at center,
+rgba(255,0,100,.13),
+rgba(12,0,7,.88) 70%
+);
+
+position: relative;
+z-index: 10;
+}
+
+.cta h2 {
+margin-top: 0;
+
+color: #ff5e9c;
+
+font-size:
+clamp(30px, 5vw, 52px);
+}
+
+.cta p {
+color: #d2a0b3;
+line-height: 1.7;
+margin-bottom: 30px;
+}
+
+/* hearts */
+
+.floating-heart {
+position: fixed;
+bottom: -80px;
+
+pointer-events: none;
+z-index: 3;
+
+color: #ff4f91;
+
+text-shadow:
+0 0 8px #ff0055,
+0 0 20px #ff0055;
+
+animation:
+fly linear forwards;
+}
+
+@keyframes fly {
+from {
+transform:
+translateY(0)
+translateX(0)
+rotate(0deg);
+
+opacity: 0;
+}
+
+10% {
+opacity: .65;
+}
+
+to {
+transform:
+translateY(-120vh)
+translateX(var(--x))
+rotate(360deg);
+
+opacity: 0;
+}
+}
+
+/* mobile */
+
+@media(max-width:850px) {
+.hero {
+grid-template-columns: 1fr;
+gap: 45px;
+text-align: center;
+}
+
+.description,
+.subtitle {
+margin-left: auto;
+margin-right: auto;
+}
+
+.hero-actions {
+justify-content: center;
+}
+
+.features,
+.steps {
+grid-template-columns: 1fr;
+}
+
+.nav-button {
+font-size: 12px;
+}
+}
 </style>
 </head>
 
 <body>
 
-<div class="background
-
-
-></div>
-
-<div class="console">
-    <div class="title">LOVE.exe</div>
-
-    <div class="subtitle">
-        connection established ♥
-    </div>
-
-    <div class="terminal">
-        &gt; initializing feelings...
-
-        &gt; loading hearts... [████████████] 100%
-
-        &gt; love system activated
-
-        &gt; <span class="cursor"></span>
-    </div>
+<nav class="nav">
+<div class="brand">
+LOVE.exe
 </div>
 
-<div class="scanlines"></div>
+<a
+class="nav-button"
+href="./creator/"
+>
+CREATE_LOVE →
+</a>
+</nav>
+
+
+<section class="hero">
+
+<div>
+
+<div class="status">
+&gt; LOVE SYSTEM ONLINE_
+</div>
+
+<h1 class="title">
+LOVE<br>.exe
+</h1>
+
+<div class="subtitle">
+Создай персональную страницу
+для особенного человека ❤️
+</div>
+
+<div class="description">
+Напиши имя и сообщение, выбери стиль,
+получи уникальную ссылку и QR-код.
+Никакого программирования — всё создаётся
+прямо в браузере.
+</div>
+
+
+<div class="hero-actions">
+
+<a
+href="./creator/"
+class="primary"
+>
+♥ СОЗДАТЬ СТРАНИЦУ
+</a>
+
+<a
+href="#how"
+class="secondary"
+>
+КАК ЭТО РАБОТАЕТ?
+</a>
+
+</div>
+
+</div>
+
+
+<div class="preview-wrap">
+
+<div class="preview">
+
+<div class="preview-logo">
+LOVE.exe
+</div>
+
+<div class="preview-heart">
+❤️
+</div>
+
+<div class="preview-name">
+Для Полины
+</div>
+
+<div class="preview-message">
+Иногда нескольких слов достаточно,
+чтобы сделать чей-то день особенным.
+</div>
+
+<div class="preview-status">
+&gt; LOVE connection established ♥
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+&gt; WHAT_CAN_YOU_CREATE
+</h2>
+
+<div class="features">
+
+<div class="card">
+
+<div class="card-icon">
+💌
+</div>
+
+<h3>
+Персональное послание
+</h3>
+
+<p>
+Имя получателя и твой собственный текст
+сохраняются в отдельной LOVE-странице.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-icon">
+🎨
+</div>
+
+<h3>
+Несколько стилей
+</h3>
+
+<p>
+Neon, Romantic, Galaxy и Console —
+каждый вариант полностью меняет атмосферу страницы.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-icon">
+▦
+</div>
+
+<h3>
+Уникальная ссылка + QR
+</h3>
+
+<p>
+После создания можно отправить ссылку
+или показать стилизованный QR-код.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section
+class="section"
+id="how"
+>
+
+<h2 class="section-title">
+&gt; HOW_IT_WORKS
+</h2>
+
+<div class="steps">
+
+<div class="step">
+
+<div class="step-number">
+01
+</div>
+
+<h3>
+Создай
+</h3>
+
+<p>
+Введи имя, напиши сообщение
+и выбери подходящий стиль.
+</p>
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+02
+</div>
+
+<h3>
+Получи ссылку
+</h3>
+
+<p>
+LOVE.exe сохранит страницу
+и создаст для неё уникальный ID.
+</p>
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+03
+</div>
+
+<h3>
+Отправь
+</h3>
+
+<p>
+Поделись ссылкой или QR-кодом
+и оставь остальное LOVE.exe.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="cta">
+
+<h2>
+Готов создать свою? ❤️
+</h2>
+
+<p>
+Это займёт меньше минуты.
+Напиши несколько слов — мы превратим их
+в красивую персональную страницу.
+</p>
+
+<a
+href="./creator/"
+class="primary"
+>
+♥ ОТКРЫТЬ LOVE CREATOR
+</a>
+
+</section>
+
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
 
-const nameElement = document.getElementById("name");
-const messageElement = document.getElementById("message");
-const heartElement = document.getElementById("heart");
-const shareButton = document.getElementById("share");
-
-const API_URL = "https://love-api.myrezerv018.workers.dev";
-
-async function loadPage() {
-if (!id) {
-nameElement.textContent = "Страница не найдена";
-messageElement.textContent = "В ссылке нет ID 😢";
-heartElement.textContent = "💔";
-return;
-}
-
-try {
-nameElement.textContent = "Загрузка...";
-messageElement.textContent = "";
-
-const response = await fetch(
-API_URL + "/api/page/" + encodeURIComponent(id)
-);
-
-if (!response.ok) {
-throw new Error("HTTP " + response.status);
-}
-
-const data = await response.json();
-
-nameElement.textContent = "Для " + data.name;
-messageElement.textContent = data.message;
-
-applyStyle(data.style);
-
-} catch (error) {
-console.error("LOAD ERROR:", error);
-
-nameElement.textContent = "Страница не найдена";
-messageElement.textContent =
-"Не удалось загрузить данные 😢";
-
-heartElement.textContent = "💔";
-}
-}
-
-function applyStyle(style) {
-if (style === "neon") {
-document.body.style.background =
-"radial-gradient(circle, #42001f, #080005 70%)";
-
-heartElement.textContent = "❤️";
-
-nameElement.style.color = "#ff6fa5";
-messageElement.style.color = "#ffe1eb";
-
-nameElement.style.textShadow =
-"0 0 10px #ff0055, 0 0 25px #ff0055";
-}
-
-if (style === "romantic") {
-document.body.style.background =
-"radial-gradient(circle, #4b1028, #120006 70%)";
-
-heartElement.textContent = "💗";
-
-nameElement.style.color = "#ffb0ca";
-messageElement.style.color = "#ffd6e5";
-
-nameElement.style.textShadow =
-"0 0 10px #ff6fa7, 0 0 25px #ff9ac0";
-}
-
-if (style === "galaxy") {
-document.body.style.background =
-"radial-gradient(circle at center, #35105e, #05000d 70%)";
-
-heartElement.textContent = "💜";
-
-nameElement.style.color = "#c98cff";
-messageElement.style.color = "#e4c8ff";
-
-nameElement.style.textShadow =
-"0 0 10px #8d3cff, 0 0 25px #b66cff";
-}
-
-if (style === "console") {
-document.body.style.background = "#020802";
-
-heartElement.textContent = "♥";
-
-heartElement.style.color = "#55ff88";
-heartElement.style.filter =
-"drop-shadow(0 0 10px #00ff55)";
-
-nameElement.style.color = "#55ff88";
-messageElement.style.color = "#8affaa";
-
-nameElement.style.textShadow =
-"0 0 10px #00ff55";
-
-document.querySelector(".logo").style.color =
-"#55ff88";
-
-document.querySelector(".logo").style.textShadow =
-"0 0 10px #00ff55, 0 0 25px #00ff55";
-}
-}
-
-
-/* ЛЕТАЮЩИЕ СЕРДЦА */
-
-const hearts = [
+const heartTypes = [
 "♥",
 "♡",
 "❤",
 "💗",
 "💖",
-"💕",
-"💘"
+"💕"
 ];
+
 
 function createHeart() {
-const heart = document.createElement("div");
 
-heart.className = "heart";
+const heart =
+document.createElement(
+"div"
+);
+
+heart.className =
+"floating-heart";
+
 
 heart.textContent =
-hearts[
-Math.floor(Math.random() * hearts.length)
+heartTypes[
+Math.floor(
+Math.random() *
+heartTypes.length
+)
 ];
 
+
 heart.style.left =
-Math.random() * 100 + "vw";
+Math.random() *
+100 +
+"vw";
+
 
 heart.style.fontSize =
-15 + Math.random() * 35 + "px";
+15 +
+Math.random() *
+30 +
+"px";
+
 
 heart.style.setProperty(
 "--x",
-(Math.random() * 200 - 100) + "px"
+(
+Math.random() *
+200 -
+100
+) +
+"px"
 );
+
 
 heart.style.animationDuration =
-5 + Math.random() * 6 + "s";
-
-document.body.appendChild(heart);
-
-setTimeout(() => {
-heart.remove();
-}, 12000);
-}
-
-setInterval(createHeart, 350);
+6 +
+Math.random() *
+6 +
+"s";
 
 
-/* ПОДЕЛИТЬСЯ */
-
-shareButton.addEventListener("click", async function () {
-const url = window.location.href;
-
-try {
-if (navigator.share) {
-await navigator.share({
-title: "LOVE.exe ❤️",
-url: url
-});
-
-return;
-}
-
-await navigator.clipboard.writeText(url);
-
-this.textContent =
-"✓ ССЫЛКА СКОПИРОВАНА";
-
-setTimeout(() => {
-this.textContent =
-"♥ ПОДЕЛИТЬСЯ";
-}, 2000);
-
-} catch (error) {
-console.error("SHARE ERROR:", error);
-
-prompt(
-"Скопируй эту ссылку:",
-url
+document.body.appendChild(
+heart
 );
+
+
+setTimeout(
+() =>
+heart.remove(),
+
+13000
+);
+
 }
-});
 
 
-loadPage();
+setInterval(
+createHeart,
+500
+);
+
 </script>
-   
+
 </body>
-</html>"
+</html>
