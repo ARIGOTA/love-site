@@ -601,6 +601,174 @@ let currentStyle =
 /* =========================
 ЗАГРУЗКА СТРАНИЦЫ
 ========================= */
+function declineName(name) {
+
+if (!name) return name;
+
+const original = name.trim();
+const lower = original.toLowerCase();
+
+let result = original;
+
+
+// Исключения и особые имена
+
+const exceptions = {
+"любовь": "Любови",
+"мария": "Марии",
+"софия": "Софии",
+"лилия": "Лилии",
+"юлия": "Юлии",
+"наталия": "Наталии",
+"валерия": "Валерии",
+"виктория": "Виктории",
+"анастасия": "Анастасии",
+"ксения": "Ксении",
+"евгения": "Евгении",
+"дарья": "Дарьи",
+"наталья": "Натальи",
+"татьяна": "Татьяны",
+"полина": "Полины",
+"алина": "Алины",
+"анна": "Анны",
+"елена": "Елены",
+"ольга": "Ольги",
+"ирина": "Ирины",
+"екатерина": "Екатерины",
+"александра": "Александры",
+"вероника": "Вероники",
+"карина": "Карины",
+
+"илья": "Ильи",
+"никита": "Никиты",
+"данила": "Данилы",
+"данил": "Данила",
+"павел": "Павла",
+"лев": "Льва"
+};
+
+
+if (exceptions[lower]) {
+return matchCase(
+original,
+exceptions[lower]
+);
+}
+
+
+// Женские имена на -ия:
+// Мария -> Марии
+
+if (lower.endsWith("ия")) {
+
+result =
+original.slice(0, -2) +
+"ии";
+
+}
+
+// Женские имена на -ья:
+// Дарья -> Дарьи
+
+else if (lower.endsWith("ья")) {
+
+result =
+original.slice(0, -2) +
+"ьи";
+
+}
+
+// Большинство имён на -а:
+// Полина -> Полины
+// Анна -> Анны
+
+else if (lower.endsWith("а")) {
+
+const beforeA =
+lower.charAt(
+lower.length - 2
+);
+
+// После г, к, х, ж, ч, ш, щ
+// пишется И
+
+if (
+"гкхжчшщ".includes(beforeA)
+) {
+
+result =
+original.slice(0, -1) +
+"и";
+
+}
+
+else {
+
+result =
+original.slice(0, -1) +
+"ы";
+
+}
+
+}
+
+// Имена на -я:
+// Илья -> Ильи
+
+else if (lower.endsWith("я")) {
+
+result =
+original.slice(0, -1) +
+"и";
+
+}
+
+// Мужские имена на согласную:
+// Максим -> Максима
+// Артём -> Артёма
+
+else if (
+/[бвгджзйклмнпрстфхцчшщ]$/i
+.test(lower)
+) {
+
+result =
+original + "а";
+
+}
+
+
+return result;
+}
+
+
+function matchCase(original, declined) {
+
+if (
+original ===
+original.toUpperCase()
+) {
+
+return declined.toUpperCase();
+
+}
+
+
+if (
+original[0] ===
+original[0].toUpperCase()
+) {
+
+return (
+declined[0].toUpperCase() +
+declined.slice(1)
+);
+
+}
+
+
+return declined.toLowerCase();
+}
 
 async function loadPage() {
 
@@ -648,7 +816,7 @@ data.error ||
 
 
 nameElement.textContent =
-"Для " + data.name;
+    "Для " + declineName(data.name);
 
 
 messageElement.textContent =
