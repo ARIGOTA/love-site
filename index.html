@@ -220,7 +220,6 @@
 <div class="scanlines"></div>
 
 <script>
-
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -229,155 +228,111 @@ const messageElement = document.getElementById("message");
 const heartElement = document.getElementById("heart");
 const shareButton = document.getElementById("share");
 
-const API_URL =
-"https://love-api.myrezerv018.workers.dev";
-
+const API_URL = "https://love-api.myrezerv018.workers.dev";
 
 async function loadPage() {
-
 if (!id) {
-
-nameElement.textContent =
-"Страница не найдена";
-
-messageElement.textContent =
-"В ссылке отсутствует ID 😢";
-
+nameElement.textContent = "Страница не найдена";
+messageElement.textContent = "В ссылке нет ID 😢";
+heartElement.textContent = "💔";
 return;
 }
 
-
 try {
+nameElement.textContent = "Загрузка...";
+messageElement.textContent = "";
 
 const response = await fetch(
-API_URL +
-"/api/page/" +
-encodeURIComponent(id)
+API_URL + "/api/page/" + encodeURIComponent(id)
 );
-
-
-const data =
-await response.json();
-
 
 if (!response.ok) {
-
-throw new Error(
-data.error ||
-"Page not found"
-);
-
+throw new Error("HTTP " + response.status);
 }
 
+const data = await response.json();
 
-nameElement.textContent =
-"Для " + data.name;
-
-messageElement.textContent =
-data.message;
-
+nameElement.textContent = "Для " + data.name;
+messageElement.textContent = data.message;
 
 applyStyle(data.style);
 
-}
+} catch (error) {
+console.error("LOAD ERROR:", error);
 
-catch (error) {
-
-console.error(error);
-
-nameElement.textContent =
-"Страница не найдена";
-
+nameElement.textContent = "Страница не найдена";
 messageElement.textContent =
-"Возможно, ссылка неверная или страница была удалена 😢";
+"Не удалось загрузить данные 😢";
 
-heartElement.textContent =
-"💔";
-
+heartElement.textContent = "💔";
 }
-
 }
-
 
 function applyStyle(style) {
-
 if (style === "neon") {
-
 document.body.style.background =
 "radial-gradient(circle, #42001f, #080005 70%)";
 
-heartElement.textContent =
-"❤️";
+heartElement.textContent = "❤️";
 
-nameElement.style.color =
-"#ff6fa5";
+nameElement.style.color = "#ff6fa5";
+messageElement.style.color = "#ffe1eb";
 
 nameElement.style.textShadow =
 "0 0 10px #ff0055, 0 0 25px #ff0055";
-
 }
 
-
 if (style === "romantic") {
-
 document.body.style.background =
 "radial-gradient(circle, #4b1028, #120006 70%)";
 
-heartElement.textContent =
-"💗";
+heartElement.textContent = "💗";
 
-nameElement.style.color =
-"#ffb0ca";
+nameElement.style.color = "#ffb0ca";
+messageElement.style.color = "#ffd6e5";
 
 nameElement.style.textShadow =
 "0 0 10px #ff6fa7, 0 0 25px #ff9ac0";
-
 }
 
-
 if (style === "galaxy") {
-
 document.body.style.background =
-"radial-gradient(circle, #35105e, #05000d 70%)";
+"radial-gradient(circle at center, #35105e, #05000d 70%)";
 
-heartElement.textContent =
-"💜";
+heartElement.textContent = "💜";
 
-nameElement.style.color =
-"#c98cff";
+nameElement.style.color = "#c98cff";
+messageElement.style.color = "#e4c8ff";
 
 nameElement.style.textShadow =
 "0 0 10px #8d3cff, 0 0 25px #b66cff";
-
 }
 
-
 if (style === "console") {
+document.body.style.background = "#020802";
 
-document.body.style.background =
-"#020802";
+heartElement.textContent = "♥";
 
-document.body.style.color =
-"#55ff88";
-
-heartElement.textContent =
-"♥";
-
+heartElement.style.color = "#55ff88";
 heartElement.style.filter =
 "drop-shadow(0 0 10px #00ff55)";
 
-nameElement.style.color =
-"#55ff88";
+nameElement.style.color = "#55ff88";
+messageElement.style.color = "#8affaa";
 
 nameElement.style.textShadow =
 "0 0 10px #00ff55";
 
+document.querySelector(".logo").style.color =
+"#55ff88";
+
+document.querySelector(".logo").style.textShadow =
+"0 0 10px #00ff55, 0 0 25px #00ff55";
+}
 }
 
-}
 
-
-/* Летающие сердца */
+/* ЛЕТАЮЩИЕ СЕРДЦА */
 
 const hearts = [
 "♥",
@@ -389,75 +344,47 @@ const hearts = [
 "💘"
 ];
 
-
 function createHeart() {
+const heart = document.createElement("div");
 
-const heart =
-document.createElement("div");
-
-heart.className =
-"heart";
+heart.className = "heart";
 
 heart.textContent =
 hearts[
-Math.floor(
-Math.random() *
-hearts.length
-)
+Math.floor(Math.random() * hearts.length)
 ];
 
 heart.style.left =
 Math.random() * 100 + "vw";
 
 heart.style.fontSize =
-15 +
-Math.random() * 35 +
-"px";
+15 + Math.random() * 35 + "px";
 
 heart.style.setProperty(
 "--x",
-(
-Math.random() * 200 - 100
-) + "px"
+(Math.random() * 200 - 100) + "px"
 );
 
 heart.style.animationDuration =
-5 +
-Math.random() * 6 +
-"s";
+5 + Math.random() * 6 + "s";
 
-document.body.appendChild(
-heart
-);
+document.body.appendChild(heart);
 
-
-setTimeout(
-() => heart.remove(),
-12000
-);
-
+setTimeout(() => {
+heart.remove();
+}, 12000);
 }
 
-
-setInterval(
-createHeart,
-350
-);
+setInterval(createHeart, 350);
 
 
-/* Поделиться */
+/* ПОДЕЛИТЬСЯ */
 
-shareButton.addEventListener(
-"click",
-async function () {
-
-const url =
-window.location.href;
+shareButton.addEventListener("click", async function () {
+const url = window.location.href;
 
 try {
-
 if (navigator.share) {
-
 await navigator.share({
 title: "LOVE.exe ❤️",
 url: url
@@ -466,42 +393,29 @@ url: url
 return;
 }
 
-
-await navigator.clipboard.writeText(
-url
-);
+await navigator.clipboard.writeText(url);
 
 this.textContent =
 "✓ ССЫЛКА СКОПИРОВАНА";
 
-
-setTimeout(
-() => {
-
+setTimeout(() => {
 this.textContent =
 "♥ ПОДЕЛИТЬСЯ";
+}, 2000);
 
-},
-2000
+} catch (error) {
+console.error("SHARE ERROR:", error);
+
+prompt(
+"Скопируй эту ссылку:",
+url
 );
-
 }
+});
 
-catch (error) {
-
-console.error(error);
-
-}
-
-}
-);
-
-
-/* Загружаем страницу */
 
 loadPage();
-
 </script>
-
+   
 </body>
 </html>"
