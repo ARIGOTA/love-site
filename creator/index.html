@@ -426,156 +426,255 @@ textarea {
 
 <script>
 
-/* Получаем элементы */
+const nameInput = document.getElementById("name");
+const messageInput = document.getElementById("message");
 
-const nameInput =
-    document.getElementById("name");
+const previewName = document.getElementById("previewName");
+const previewMessage = document.getElementById("previewMessage");
 
-const messageInput =
-    document.getElementById("message");
+const createButton = document.getElementById("create");
 
-const previewName =
-    document.getElementById("previewName");
+const preview = document.querySelector(".preview");
+const bigHeart = document.querySelector(".big-heart");
 
-const previewMessage =
-    document.getElementById("previewMessage");
-
-const createButton =
-    document.getElementById("create");
+const styles = document.querySelectorAll(".style");
 
 
-/* Живой предпросмотр */
+/* Живой предпросмотр имени */
 
-nameInput.addEventListener("input", function() {
+nameInput.addEventListener("input", function () {
 
-    previewName.textContent =
-        this.value || "Твоё имя";
+previewName.textContent =
+this.value || "Твоё имя";
 
 });
 
 
-messageInput.addEventListener("input", function() {
+/* Живой предпросмотр сообщения */
 
-    previewMessage.textContent =
-        this.value ||
-        "Здесь появится твоё сообщение...";
+messageInput.addEventListener("input", function () {
 
-});
-
-
-/* Выбор стиля */
-
-const styles =
-    document.querySelectorAll(".style");
-
-styles.forEach(function(button) {
-
-    button.addEventListener("click", function() {
-
-        styles.forEach(function(item) {
-
-            item.classList.remove("selected");
-
-        });
-
-        this.classList.add("selected");
-
-    });
+previewMessage.textContent =
+this.value ||
+"Здесь появится твоё сообщение...";
 
 });
 
 
-/* Кнопка */
+/* Смена стиля */
 
-createButton.addEventListener("click", function() {
+styles.forEach(function (button) {
 
-    const name =
-        nameInput.value.trim();
+button.addEventListener("click", function () {
 
-    const message =
-        messageInput.value.trim();
+/* Снимаем выделение */
 
-    if (!name) {
+styles.forEach(function (item) {
+item.classList.remove("selected");
+});
 
-        alert("Сначала введи имя ❤️");
+/* Выделяем выбранный */
 
-        nameInput.focus();
+this.classList.add("selected");
 
-        return;
-    }
+/* Получаем название стиля */
 
-    if (!message) {
+const selectedStyle =
+this.dataset.style;
 
-        alert("Сначала напиши сообщение ❤️");
+applyStyle(selectedStyle);
 
-        messageInput.focus();
-
-        return;
-    }
-
-    alert(
-        "Отлично! ❤️\n\n" +
-        "Твоя страница готова к созданию.\n\n" +
-        "Следующим этапом мы подключим " +
-        "уникальные ссылки."
-    );
+});
 
 });
 
 
-/* Анимация сердечек */
+/* Применение стиля */
+
+function applyStyle(style) {
+
+if (style === "neon") {
+
+preview.style.background =
+"radial-gradient(circle, #42001f, #090006 70%)";
+
+preview.style.color = "#ff4f91";
+
+bigHeart.textContent = "❤️";
+
+bigHeart.style.filter =
+"drop-shadow(0 0 10px #ff0055) drop-shadow(0 0 30px #ff0055)";
+
+previewName.style.color =
+"#ff5c9b";
+
+previewName.style.textShadow =
+"0 0 10px #ff0055, 0 0 25px #ff0055";
+
+}
+
+
+if (style === "romantic") {
+
+preview.style.background =
+"radial-gradient(circle, #4b1028, #18000d 70%)";
+
+preview.style.color = "#ffb6d0";
+
+bigHeart.textContent = "💗";
+
+bigHeart.style.filter =
+"drop-shadow(0 0 10px #ff6fa7) drop-shadow(0 0 35px #ff9ac0)";
+
+previewName.style.color =
+"#ffb0ca";
+
+previewName.style.textShadow =
+"0 0 10px #ff6fa7, 0 0 25px #ff9ac0";
+
+}
+
+
+if (style === "galaxy") {
+
+preview.style.background =
+"radial-gradient(circle at 50% 40%, #35105e, #080014 70%)";
+
+preview.style.color = "#d8a8ff";
+
+bigHeart.textContent = "💜";
+
+bigHeart.style.filter =
+"drop-shadow(0 0 10px #9b4dff) drop-shadow(0 0 35px #b66cff)";
+
+previewName.style.color =
+"#c98cff";
+
+previewName.style.textShadow =
+"0 0 10px #8d3cff, 0 0 25px #b66cff";
+
+}
+
+
+if (style === "console") {
+
+preview.style.background =
+"#020802";
+
+preview.style.color = "#55ff88";
+
+bigHeart.textContent = "♥";
+
+bigHeart.style.filter =
+"drop-shadow(0 0 8px #00ff55)";
+
+previewName.style.color =
+"#55ff88";
+
+previewName.style.textShadow =
+"0 0 10px #00ff55";
+
+}
+
+}
+
+
+/* Создание страницы */
+
+createButton.addEventListener("click", function () {
+
+const name =
+nameInput.value.trim();
+
+const message =
+messageInput.value.trim();
+
+if (!name) {
+
+alert("Сначала введи имя ❤️");
+
+nameInput.focus();
+
+return;
+
+}
+
+if (!message) {
+
+alert("Сначала напиши сообщение ❤️");
+
+messageInput.focus();
+
+return;
+
+}
+
+alert(
+"Отлично! ❤️\n\n" +
+"Страница подготовлена.\n\n" +
+"Следующим этапом сделаем настоящую " +
+"персональную ссылку."
+);
+
+});
+
+
+/* Плавающие сердца */
 
 const heartTypes = [
-    "♥",
-    "♡",
-    "❤",
-    "💗",
-    "💖",
-    "💕",
-    "💘"
+"♥",
+"♡",
+"❤",
+"💗",
+"💖",
+"💕",
+"💘"
 ];
 
 function createHeart() {
 
-    const heart =
-        document.createElement("div");
+const heart =
+document.createElement("div");
 
-    heart.className =
-        "floating-heart";
+heart.className =
+"floating-heart";
 
-    heart.textContent =
-        heartTypes[
-            Math.floor(
-                Math.random() *
-                heartTypes.length
-            )
-        ];
+heart.textContent =
+heartTypes[
+Math.floor(
+Math.random() *
+heartTypes.length
+)
+];
 
-    heart.style.left =
-        Math.random() * 100 + "vw";
+heart.style.left =
+Math.random() * 100 + "vw";
 
-    heart.style.fontSize =
-        15 + Math.random() * 35 + "px";
+heart.style.fontSize =
+15 + Math.random() * 35 + "px";
 
-    heart.style.setProperty(
-        "--x",
-        (Math.random() * 200 - 100) + "px"
-    );
+heart.style.setProperty(
+"--x",
+(Math.random() * 200 - 100) + "px"
+);
 
-    heart.style.animationDuration =
-        5 + Math.random() * 6 + "s";
+heart.style.animationDuration =
+5 + Math.random() * 6 + "s";
 
-    document.body.appendChild(heart);
+document.body.appendChild(heart);
 
-    setTimeout(function() {
+setTimeout(function () {
+heart.remove();
+}, 12000);
 
-        heart.remove();
-
-    }, 12000);
 }
 
-
 setInterval(createHeart, 400);
+
+
+/* Стиль по умолчанию */
+
+applyStyle("neon");
 
 </script>
 
