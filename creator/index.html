@@ -298,6 +298,143 @@ textarea {
         min-height: 400px;
     }
 }
+/* =========================
+   SENDER SELECTOR
+========================= */
+
+.sender-section {
+    position: relative;
+    margin-top: 18px;
+    margin-bottom: 22px;
+}
+
+.sender-title {
+    margin-bottom: 8px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.sender-toggle {
+    width: 100%;
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 16px;
+
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+
+    color: inherit;
+    font: inherit;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.sender-toggle:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sender-toggle-arrow {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.sender-section.open .sender-toggle-arrow {
+    transform: rotate(180deg);
+}
+
+/* выпадающее меню */
+
+.sender-menu {
+    display: none;
+
+    margin-top: 8px;
+    padding: 8px;
+
+    background: rgba(10, 5, 15, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.45);
+}
+
+.sender-section.open .sender-menu {
+    display: grid;
+    gap: 8px;
+}
+
+/* две визуально разделённые кнопки */
+
+.sender-card {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    text-align: left;
+
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+
+    color: inherit;
+    font: inherit;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.sender-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-1px);
+}
+
+.sender-card.active {
+    border-color: rgba(255, 80, 160, 0.8);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 40, 130, 0.14),
+            rgba(140, 60, 255, 0.08)
+        );
+
+    box-shadow:
+        0 0 18px rgba(255, 40, 130, 0.12);
+}
+
+.sender-card-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.sender-card-subtitle {
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.55;
+}
+
+/* поле имени */
+
+.sender-name-box {
+    display: none;
+    margin-top: 12px;
+}
+
+.sender-name-box.visible {
+    display: block;
+}
 </style>
 </head>
 
@@ -327,7 +464,7 @@ textarea {
         </h2>
 
         <label>
-            Имя получателя
+            Для кого?
         </label>
 
         <input
@@ -336,7 +473,79 @@ textarea {
             placeholder="Например: Аня"
             maxlength="40"
         >
+<div class="sender-section">
 
+    <div class="sender-title">
+        Отправить:
+    </div>
+
+    <button
+        type="button"
+        class="sender-toggle"
+        id="senderToggle"
+    >
+        <span id="senderToggleText">
+            Анонимно
+        </span>
+
+        <span class="sender-toggle-arrow">
+            ▾
+        </span>
+    </button>
+
+    <div
+        class="sender-menu"
+        id="senderMenu"
+    >
+
+        <button
+            type="button"
+            class="sender-card active"
+            data-mode="anonymous"
+        >
+            <div class="sender-card-title">
+                👤 Анонимно
+            </div>
+
+            <div class="sender-card-subtitle">
+                На странице будет «От Анонима»
+            </div>
+        </button>
+
+        <button
+            type="button"
+            class="sender-card"
+            data-mode="named"
+        >
+            <div class="sender-card-title">
+                ❤️ От своего имени
+            </div>
+
+            <div class="sender-card-subtitle">
+                Указать своё имя
+            </div>
+        </button>
+
+    </div>
+
+    <div
+        class="sender-name-box"
+        id="senderNameBox"
+    >
+        <label>
+            Ваше имя
+        </label>
+
+        <input
+            id="sender"
+            type="text"
+            placeholder="Например: Егор"
+            maxlength="40"
+            autocomplete="off"
+        >
+    </div>
+
+</div>
 
         <label>
             Твоё сообщение
@@ -427,28 +636,67 @@ textarea {
 <script>
 
 const nameInput = document.getElementById("name");
-const messageInput = document.getElementById("message");
 
-const previewName = document.getElementById("previewName");
-const previewMessage = document.getElementById("previewMessage");
+const senderInput =
+    document.getElementById("sender");
 
-const createButton = document.getElementById("create");
+const senderSection =
+    document.querySelector(".sender-section");
 
-const preview = document.querySelector(".preview");
-const bigHeart = document.querySelector(".big-heart");
+const senderToggle =
+    document.getElementById("senderToggle");
 
-const styles = document.querySelectorAll(".style");
+const senderToggleText =
+    document.getElementById("senderToggleText");
 
+const senderMenu =
+    document.getElementById("senderMenu");
 
-/* Живой предпросмотр имени */
+const senderNameBox =
+    document.getElementById("senderNameBox");
 
-nameInput.addEventListener("input", function () {
+const senderCards =
+    document.querySelectorAll(".sender-card");
 
-previewName.textContent =
-this.value || "Твоё имя";
+let senderMode = "anonymous";
 
+const messageInput =
+    document.getElementById("message");
+
+senderToggle.addEventListener("click", function () {
+    senderSection.classList.toggle("open");
 });
 
+senderCards.forEach(function (card) {
+
+    card.addEventListener("click", function () {
+
+        senderCards.forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+        senderMode = this.dataset.mode;
+
+        if (senderMode === "anonymous") {
+
+            senderToggleText.textContent = "Анонимно";
+            senderNameBox.classList.remove("visible");
+            senderInput.value = "";
+
+        } else {
+
+            senderToggleText.textContent = "От своего имени";
+            senderNameBox.classList.add("visible");
+            senderInput.focus();
+
+        }
+
+        senderSection.classList.remove("open");
+    });
+
+});
 
 /* Живой предпросмотр сообщения */
 
@@ -592,10 +840,15 @@ window.addEventListener("pageshow", function () {
     resetCreateButton();
 });
 const name =
-nameInput.value.trim();
+    nameInput.value.trim();
+
+const sender =
+    senderMode === "anonymous"
+        ? "anonymous"
+        : senderInput.value.trim();
 
 const message =
-messageInput.value.trim();
+    messageInput.value.trim();
 
 const selectedStyle =
 document
@@ -615,6 +868,14 @@ messageInput.focus();
 return;
 }
 
+if (
+    senderMode === "named" &&
+    !sender
+) {
+    alert("Введите своё имя ❤️");
+    senderInput.focus();
+    return;
+}
 
 createButton.disabled = true;
 createButton.textContent =
@@ -634,6 +895,7 @@ headers: {
 
 body: JSON.stringify({
 name: name,
+sender: sender,
 message: message,
 style: selectedStyle
 })
