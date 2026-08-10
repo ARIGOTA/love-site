@@ -221,75 +221,285 @@
 
 <script>
 
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const nameElement = document.getElementById("name");
+const messageElement = document.getElementById("message");
+const heartElement = document.getElementById("heart");
+const shareButton = document.getElementById("share");
+
+const API_URL =
+"https://love-api.myrezerv018.workers.dev";
+
+
+async function loadPage() {
+
+if (!id) {
+
+nameElement.textContent =
+"Страница не найдена";
+
+messageElement.textContent =
+"В ссылке отсутствует ID 😢";
+
+return;
+}
+
+
+try {
+
+const response = await fetch(
+API_URL +
+"/api/page/" +
+encodeURIComponent(id)
+);
+
+
+const data =
+await response.json();
+
+
+if (!response.ok) {
+
+throw new Error(
+data.error ||
+"Page not found"
+);
+
+}
+
+
+nameElement.textContent =
+"Для " + data.name;
+
+messageElement.textContent =
+data.message;
+
+
+applyStyle(data.style);
+
+}
+
+catch (error) {
+
+console.error(error);
+
+nameElement.textContent =
+"Страница не найдена";
+
+messageElement.textContent =
+"Возможно, ссылка неверная или страница была удалена 😢";
+
+heartElement.textContent =
+"💔";
+
+}
+
+}
+
+
+function applyStyle(style) {
+
+if (style === "neon") {
+
+document.body.style.background =
+"radial-gradient(circle, #42001f, #080005 70%)";
+
+heartElement.textContent =
+"❤️";
+
+nameElement.style.color =
+"#ff6fa5";
+
+nameElement.style.textShadow =
+"0 0 10px #ff0055, 0 0 25px #ff0055";
+
+}
+
+
+if (style === "romantic") {
+
+document.body.style.background =
+"radial-gradient(circle, #4b1028, #120006 70%)";
+
+heartElement.textContent =
+"💗";
+
+nameElement.style.color =
+"#ffb0ca";
+
+nameElement.style.textShadow =
+"0 0 10px #ff6fa7, 0 0 25px #ff9ac0";
+
+}
+
+
+if (style === "galaxy") {
+
+document.body.style.background =
+"radial-gradient(circle, #35105e, #05000d 70%)";
+
+heartElement.textContent =
+"💜";
+
+nameElement.style.color =
+"#c98cff";
+
+nameElement.style.textShadow =
+"0 0 10px #8d3cff, 0 0 25px #b66cff";
+
+}
+
+
+if (style === "console") {
+
+document.body.style.background =
+"#020802";
+
+document.body.style.color =
+"#55ff88";
+
+heartElement.textContent =
+"♥";
+
+heartElement.style.filter =
+"drop-shadow(0 0 10px #00ff55)";
+
+nameElement.style.color =
+"#55ff88";
+
+nameElement.style.textShadow =
+"0 0 10px #00ff55";
+
+}
+
+}
+
+
+/* Летающие сердца */
+
 const hearts = [
-    "♥",
-    "♡",
-    "❤",
-    "💗",
-    "💖",
-    "💘",
-    "💝",
-    "💕",
-    "❣",
-    "♥"
+"♥",
+"♡",
+"❤",
+"💗",
+"💖",
+"💕",
+"💘"
 ];
+
 
 function createHeart() {
 
-    const heart = document.createElement("div");
+const heart =
+document.createElement("div");
 
-    heart.className = "heart";
+heart.className =
+"heart";
 
-    heart.textContent =
-        hearts[Math.floor(Math.random() * hearts.length)];
+heart.textContent =
+hearts[
+Math.floor(
+Math.random() *
+hearts.length
+)
+];
 
-    const size =
-        Math.random() * 35 + 15;
+heart.style.left =
+Math.random() * 100 + "vw";
 
-    const left =
-        Math.random() * 100;
+heart.style.fontSize =
+15 +
+Math.random() * 35 +
+"px";
 
-    const duration =
-        Math.random() * 5 + 5;
+heart.style.setProperty(
+"--x",
+(
+Math.random() * 200 - 100
+) + "px"
+);
 
-    const move =
-        (Math.random() * 250 - 125) + "px";
+heart.style.animationDuration =
+5 +
+Math.random() * 6 +
+"s";
 
-    const rotation =
-        (Math.random() * 80 - 40) + "deg";
+document.body.appendChild(
+heart
+);
 
-    heart.style.left = left + "%";
-    heart.style.fontSize = size + "px";
-    heart.style.animationDuration =
-        duration + "s";
 
-    heart.style.setProperty(
-        "--move",
-        move
-    );
+setTimeout(
+() => heart.remove(),
+12000
+);
 
-    heart.style.setProperty(
-        "--rotate",
-        rotation
-    );
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, duration * 1000);
 }
 
-/* Создание сердец */
-setInterval(createHeart, 180);
 
-/* Первые сердца сразу */
-for (let i = 0; i < 15; i++) {
-    setTimeout(
-        createHeart,
-        i * 150
-    );
+setInterval(
+createHeart,
+350
+);
+
+
+/* Поделиться */
+
+shareButton.addEventListener(
+"click",
+async function () {
+
+const url =
+window.location.href;
+
+try {
+
+if (navigator.share) {
+
+await navigator.share({
+title: "LOVE.exe ❤️",
+url: url
+});
+
+return;
 }
+
+
+await navigator.clipboard.writeText(
+url
+);
+
+this.textContent =
+"✓ ССЫЛКА СКОПИРОВАНА";
+
+
+setTimeout(
+() => {
+
+this.textContent =
+"♥ ПОДЕЛИТЬСЯ";
+
+},
+2000
+);
+
+}
+
+catch (error) {
+
+console.error(error);
+
+}
+
+}
+);
+
+
+/* Загружаем страницу */
+
+loadPage();
 
 </script>
 
