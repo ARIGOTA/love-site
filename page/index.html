@@ -20,18 +20,13 @@ box-sizing: border-box;
 
 html,
 body {
-
 margin: 0;
-
 width: 100%;
 height: 100%;
-
 overflow: hidden;
-
 }
 
 body {
-
 background:
 radial-gradient(
 circle at center,
@@ -44,44 +39,34 @@ color: #ffd6e5;
 font-family:
 "Courier New",
 monospace;
-
 }
 
 
-/* Центральный блок */
+/* ЦЕНТРАЛЬНЫЙ БЛОК */
 
 .container {
-
 width: 100%;
 height: 100%;
 
 display: flex;
-
 align-items: center;
 justify-content: center;
 
 text-align: center;
 
 padding: 25px;
-
 }
-
 
 .content {
-
-max-width: 800px;
-
+max-width: 850px;
 position: relative;
-
 z-index: 5;
-
 }
 
 
-/* LOVE.exe */
+/* LOGO */
 
 .logo {
-
 font-size:
 clamp(40px, 9vw, 90px);
 
@@ -92,43 +77,31 @@ letter-spacing: 6px;
 color: #ff4f91;
 
 text-shadow:
-
 0 0 10px #ff0055,
-
 0 0 25px #ff0055,
-
 0 0 50px #ff0055;
 
 animation:
 pulse 2s infinite;
-
 }
-
 
 @keyframes pulse {
 
 0%,
 100% {
-
-transform:
-scale(1);
-
+transform: scale(1);
 }
 
 50% {
-
-transform:
-scale(1.06);
-
+transform: scale(1.06);
 }
 
 }
 
 
-/* Сердце */
+/* СЕРДЦЕ */
 
 .main-heart {
-
 margin-top: 30px;
 
 font-size:
@@ -138,42 +111,31 @@ animation:
 heartbeat 1.5s infinite;
 
 filter:
-
 drop-shadow(
 0 0 10px #ff0055
 )
-
 drop-shadow(
 0 0 30px #ff0055
 );
-
 }
-
 
 @keyframes heartbeat {
 
 0%,
 100% {
-
-transform:
-scale(1);
-
+transform: scale(1);
 }
 
 50% {
-
-transform:
-scale(1.18);
-
+transform: scale(1.18);
 }
 
 }
 
 
-/* Имя */
+/* ИМЯ */
 
 .name {
-
 margin-top: 15px;
 
 font-size:
@@ -182,18 +144,14 @@ clamp(25px, 5vw, 45px);
 color: #ff6fa5;
 
 text-shadow:
-
 0 0 10px #ff0055,
-
 0 0 25px #ff0055;
-
 }
 
 
-/* Сообщение */
+/* СООБЩЕНИЕ */
 
 .message {
-
 margin-top: 30px;
 
 font-size:
@@ -204,19 +162,34 @@ line-height: 1.8;
 color: #ffe1eb;
 
 white-space: pre-wrap;
-
 }
 
 
-/* Поделиться */
+/* СТАТУС */
 
-.share {
+.status {
+margin-top: 12px;
+font-size: 12px;
+opacity: .55;
+}
+
+
+/* КНОПКИ */
+
+.actions {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 12px;
 
 margin-top: 35px;
+}
 
-padding: 14px 25px;
+.action-button {
+padding: 14px 24px;
 
-border: 1px solid #ff4f91;
+border:
+1px solid #ff4f91;
 
 border-radius: 10px;
 
@@ -232,12 +205,9 @@ monospace;
 cursor: pointer;
 
 transition: .2s;
-
 }
 
-
-.share:hover {
-
+.action-button:hover {
 background:
 rgba(255, 0, 80, .25);
 
@@ -245,15 +215,43 @@ box-shadow:
 0 0 20px
 rgba(255, 0, 100, .5);
 
+transform:
+translateY(-2px);
 }
 
 
-/* Летающие сердца */
+/* QR */
+
+.qr-panel {
+display: none;
+
+margin:
+25px auto 0;
+
+width: fit-content;
+
+padding: 16px;
+
+background: white;
+
+border-radius: 14px;
+
+box-shadow:
+0 0 35px
+rgba(255, 0, 100, .35);
+}
+
+.qr-panel img {
+display: block;
+width: 210px;
+height: 210px;
+}
+
+
+/* ЛЕТАЮЩИЕ СЕРДЦА */
 
 .heart {
-
 position: fixed;
-
 bottom: -80px;
 
 pointer-events: none;
@@ -261,58 +259,90 @@ pointer-events: none;
 color: #ff4f91;
 
 text-shadow:
-
 0 0 8px #ff0055,
-
 0 0 20px #ff0055;
 
 animation:
 fly linear forwards;
-
 }
-
 
 @keyframes fly {
 
 from {
-
 transform:
 translateY(0)
 translateX(0)
 rotate(0deg);
 
 opacity: 0;
-
 }
 
 10% {
-
 opacity: 1;
-
 }
 
 to {
-
 transform:
 translateY(-120vh)
 translateX(var(--x))
 rotate(360deg);
 
 opacity: 0;
-
 }
 
 }
 
 
-/* Мобильные устройства */
+/* ЗВЁЗДЫ ДЛЯ GALAXY */
+
+.star {
+position: fixed;
+
+width: 2px;
+height: 2px;
+
+background: white;
+
+border-radius: 50%;
+
+opacity: .6;
+
+pointer-events: none;
+
+animation:
+twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+
+from {
+opacity: .15;
+transform: scale(.7);
+}
+
+to {
+opacity: 1;
+transform: scale(1.5);
+}
+
+}
+
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
 
 @media(max-width:600px) {
 
 .message {
-
 line-height: 1.6;
+}
 
+.actions {
+flex-direction: column;
+align-items: center;
+}
+
+.action-button {
+width: min(280px, 90vw);
 }
 
 }
@@ -324,12 +354,14 @@ line-height: 1.6;
 
 <body>
 
-
 <div class="container">
 
 <div class="content">
 
-<div class="logo">
+<div
+class="logo"
+id="logo"
+>
 LOVE.exe
 </div>
 
@@ -346,25 +378,54 @@ id="heart"
 class="name"
 id="name"
 >
-Для тебя
+Загрузка...
 </div>
 
 
 <div
 class="message"
 id="message"
+></div>
+
+
+<div
+class="status"
+id="status"
 >
-Кто-то отправил тебе
-кое-что особенное ❤️
+&gt; connecting to LOVE database...
 </div>
 
 
+<div class="actions">
+
 <button
-class="share"
+class="action-button"
 id="share"
 >
 ♥ ПОДЕЛИТЬСЯ
 </button>
+
+<button
+class="action-button"
+id="qrButton"
+>
+▦ QR-КОД
+</button>
+
+</div>
+
+
+<div
+class="qr-panel"
+id="qrPanel"
+>
+
+<img
+id="qrImage"
+alt="QR Code"
+>
+
+</div>
 
 </div>
 
@@ -373,7 +434,15 @@ id="share"
 
 <script>
 
-/* Получаем данные из URL */
+/*
+LOVE.exe PAGE
+Загружает данные из Cloudflare D1
+через love-api
+*/
+
+const API_URL =
+"https://love-api.myrezerv018.workers.dev";
+
 
 const params =
 new URLSearchParams(
@@ -381,17 +450,12 @@ window.location.search
 );
 
 
-const name =
-params.get("name");
-
-const message =
-params.get("message");
-
-const style =
-params.get("style");
+const id =
+params.get("id");
 
 
-/* Элементы */
+const logoElement =
+document.getElementById("logo");
 
 const nameElement =
 document.getElementById("name");
@@ -402,71 +466,399 @@ document.getElementById("message");
 const heartElement =
 document.getElementById("heart");
 
+const statusElement =
+document.getElementById("status");
 
-/* Имя */
+const shareButton =
+document.getElementById("share");
 
-if (name) {
+const qrButton =
+document.getElementById("qrButton");
+
+const qrPanel =
+document.getElementById("qrPanel");
+
+const qrImage =
+document.getElementById("qrImage");
+
+
+let currentStyle =
+"neon";
+
+
+/* =========================
+ЗАГРУЗКА СТРАНИЦЫ
+========================= */
+
+async function loadPage() {
+
+if (!id) {
+
+showError(
+"Страница не найдена",
+"В ссылке отсутствует ID 😢"
+);
+
+return;
+}
+
+
+try {
+
+statusElement.textContent =
+"> loading page " +
+id.toUpperCase() +
+"...";
+
+
+const response =
+await fetch(
+API_URL +
+"/api/page/" +
+encodeURIComponent(
+id
+)
+);
+
+
+const data =
+await response.json();
+
+
+if (!response.ok) {
+
+throw new Error(
+data.error ||
+"Page not found"
+);
+
+}
+
 
 nameElement.textContent =
-"Для " + name;
+"Для " + data.name;
 
-}
-
-
-/* Сообщение */
-
-if (message) {
 
 messageElement.textContent =
-message;
+data.message;
+
+
+currentStyle =
+data.style ||
+"neon";
+
+
+applyStyle(
+currentStyle
+);
+
+
+statusElement.textContent =
+"> LOVE connection established ♥";
+
+
+document.title =
+"LOVE.exe — Для " +
+data.name;
+
+
+}
+
+catch (error) {
+
+console.error(
+"LOAD ERROR:",
+error
+);
+
+
+showError(
+"Страница не найдена",
+"Не удалось загрузить данные 😢"
+);
+
+}
 
 }
 
 
-/* Стили */
+/* =========================
+ОШИБКА
+========================= */
 
-if (style === "romantic") {
+function showError(
+title,
+text
+) {
+
+nameElement.textContent =
+title;
+
+
+messageElement.textContent =
+text;
+
+
+heartElement.textContent =
+"💔";
+
+
+statusElement.textContent =
+"> connection failed";
+
+}
+
+
+/* =========================
+СТИЛИ
+========================= */
+
+function resetEffects() {
+
+document
+.querySelectorAll(".star")
+.forEach(
+star =>
+star.remove()
+);
+
+
+logoElement.style.color =
+"";
+
+logoElement.style.textShadow =
+"";
+
+nameElement.style.color =
+"";
+
+nameElement.style.textShadow =
+"";
+
+messageElement.style.color =
+"";
+
+heartElement.style.color =
+"";
+
+heartElement.style.filter =
+"";
+
+}
+
+
+function applyStyle(style) {
+
+resetEffects();
+
+
+if (style === "neon") {
 
 document.body.style.background =
-"radial-gradient(circle, #4b1028, #120006 70%)";
+"radial-gradient(circle, #42001f, #080005 70%)";
+
+
+heartElement.textContent =
+"❤️";
+
+
+logoElement.style.color =
+"#ff4f91";
+
+
+logoElement.style.textShadow =
+"0 0 10px #ff0055, 0 0 25px #ff0055, 0 0 50px #ff0055";
+
+
+nameElement.style.color =
+"#ff6fa5";
+
+
+nameElement.style.textShadow =
+"0 0 10px #ff0055, 0 0 25px #ff0055";
+
+
+messageElement.style.color =
+"#ffe1eb";
+
+}
+
+
+else if (
+style === "romantic"
+) {
+
+document.body.style.background =
+"radial-gradient(circle, #6c173a, #1b000d 72%)";
+
 
 heartElement.textContent =
 "💗";
 
+
+logoElement.style.color =
+"#ff93ba";
+
+
+logoElement.style.textShadow =
+"0 0 10px #ff6fa7, 0 0 30px #ff9ac0";
+
+
+nameElement.style.color =
+"#ffc0d5";
+
+
+nameElement.style.textShadow =
+"0 0 12px #ff6fa7";
+
+
+messageElement.style.color =
+"#ffe4ed";
+
 }
 
 
-if (style === "galaxy") {
+else if (
+style === "galaxy"
+) {
 
 document.body.style.background =
-"radial-gradient(circle, #35105e, #05000d 70%)";
+"radial-gradient(circle at 50% 40%, #35105e, #070011 72%)";
+
 
 heartElement.textContent =
 "💜";
 
+
+logoElement.style.color =
+"#c98cff";
+
+
+logoElement.style.textShadow =
+"0 0 10px #8d3cff, 0 0 30px #b66cff, 0 0 60px #6620c9";
+
+
+nameElement.style.color =
+"#d7a8ff";
+
+
+nameElement.style.textShadow =
+"0 0 10px #8d3cff, 0 0 25px #b66cff";
+
+
+messageElement.style.color =
+"#ead7ff";
+
+
+createStars();
+
 }
 
 
-if (style === "console") {
+else if (
+style === "console"
+) {
 
 document.body.style.background =
-"#020802";
+"radial-gradient(circle, #001b08, #010603 75%)";
 
-document.body.style.color =
-"#55ff88";
 
 heartElement.textContent =
 "♥";
 
+
+heartElement.style.color =
+"#55ff88";
+
+
 heartElement.style.filter =
-"drop-shadow(0 0 10px #00ff55)";
+"drop-shadow(0 0 10px #00ff55) drop-shadow(0 0 25px #00ff55)";
+
+
+logoElement.style.color =
+"#55ff88";
+
+
+logoElement.style.textShadow =
+"0 0 10px #00ff55, 0 0 25px #00ff55";
+
+
+nameElement.style.color =
+"#55ff88";
+
+
+nameElement.style.textShadow =
+"0 0 10px #00ff55";
+
+
+messageElement.style.color =
+"#9dffb8";
+
+
+statusElement.textContent =
+"> love.exe initialized successfully";
+
+}
 
 }
 
 
-/* Летающие сердца */
+/* =========================
+GALAXY STARS
+========================= */
 
-const hearts = [
+function createStars() {
+
+for (
+let i = 0;
+i < 70;
+i++
+) {
+
+const star =
+document.createElement(
+"div"
+);
+
+
+star.className =
+"star";
+
+
+star.style.left =
+Math.random() *
+100 +
+"vw";
+
+
+star.style.top =
+Math.random() *
+100 +
+"vh";
+
+
+star.style.animationDelay =
+Math.random() *
+2 +
+"s";
+
+
+document.body.appendChild(
+star
+);
+
+}
+
+}
+
+
+/* =========================
+ЛЕТАЮЩИЕ СЕРДЦА
+========================= */
+
+const heartSets = {
+
+neon: [
 "♥",
 "♡",
 "❤",
@@ -474,43 +866,122 @@ const hearts = [
 "💖",
 "💕",
 "💘"
-];
+],
+
+romantic: [
+"💗",
+"💕",
+"💖",
+"💝",
+"♡"
+],
+
+galaxy: [
+"💜",
+"✦",
+"✧",
+"♡",
+"💫"
+],
+
+console: [
+"♥",
+"<3",
+"♡"
+]
+
+};
 
 
 function createHeart() {
 
+const set =
+heartSets[
+currentStyle
+] ||
+heartSets.neon;
+
+
 const heart =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 heart.className =
 "heart";
 
+
 heart.textContent =
-hearts[
+set[
 Math.floor(
 Math.random() *
-hearts.length
+set.length
 )
 ];
 
+
 heart.style.left =
-Math.random() * 100 + "vw";
+Math.random() *
+100 +
+"vw";
+
 
 heart.style.fontSize =
 15 +
-Math.random() * 35 +
+Math.random() *
+35 +
 "px";
+
 
 heart.style.setProperty(
 "--x",
-(Math.random() * 200 - 100) +
+
+(
+Math.random() *
+220 -
+110
+) +
 "px"
 );
 
+
 heart.style.animationDuration =
 5 +
-Math.random() * 6 +
+Math.random() *
+6 +
 "s";
+
+
+if (
+currentStyle ===
+"console"
+) {
+
+heart.style.color =
+"#55ff88";
+
+
+heart.style.textShadow =
+"0 0 10px #00ff55";
+
+}
+
+
+if (
+currentStyle ===
+"galaxy"
+) {
+
+heart.style.color =
+"#c98cff";
+
+
+heart.style.textShadow =
+"0 0 10px #8d3cff";
+
+}
+
 
 document.body.appendChild(
 heart
@@ -518,7 +989,9 @@ heart
 
 
 setTimeout(
-() => heart.remove(),
+() =>
+heart.remove(),
+
 12000
 );
 
@@ -531,22 +1004,53 @@ createHeart,
 );
 
 
-/* Кнопка поделиться */
+/* =========================
+ПОДЕЛИТЬСЯ
+========================= */
 
-document
-.getElementById("share")
-.addEventListener(
+shareButton.addEventListener(
 "click",
-async function() {
+
+async function () {
+
+const url =
+window.location.href;
+
 
 try {
 
-await navigator.clipboard.writeText(
-window.location.href
+if (
+navigator.share
+) {
+
+await navigator.share(
+{
+title:
+"LOVE.exe ❤️",
+
+text:
+"Для тебя есть кое-что особенное ❤️",
+
+url:
+url
+}
 );
+
+
+return;
+}
+
+
+await navigator
+.clipboard
+.writeText(
+url
+);
+
 
 this.textContent =
 "✓ ССЫЛКА СКОПИРОВАНА";
+
 
 setTimeout(
 () => {
@@ -555,21 +1059,97 @@ this.textContent =
 "♥ ПОДЕЛИТЬСЯ";
 
 },
+
 2000
 );
 
 }
 
-catch {
+catch (error) {
 
-alert(
-"Скопируй ссылку из адресной строки ❤️"
+console.error(
+"SHARE ERROR:",
+error
+);
+
+
+prompt(
+"Скопируй ссылку:",
+url
 );
 
 }
 
 }
 );
+
+
+/* =========================
+QR-КОД
+========================= */
+
+qrButton.addEventListener(
+"click",
+
+function () {
+
+const url =
+window.location.href;
+
+
+/*
+QR пока создаём через
+внешний API.
+Позже можем заменить
+на полностью локальную
+генерацию.
+*/
+
+const qrUrl =
+"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+encodeURIComponent(
+url
+);
+
+
+qrImage.src =
+qrUrl;
+
+
+if (
+qrPanel.style.display ===
+"block"
+) {
+
+qrPanel.style.display =
+"none";
+
+
+qrButton.textContent =
+"▦ QR-КОД";
+
+}
+
+else {
+
+qrPanel.style.display =
+"block";
+
+
+qrButton.textContent =
+"× СКРЫТЬ QR";
+
+}
+
+}
+);
+
+
+/* =========================
+START
+========================= */
+
+loadPage();
 
 </script>
 
