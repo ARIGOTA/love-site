@@ -1,1 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>LOVE.exe</title>
+
+<style>
+
+* {
+box-sizing: border-box;
+}
+
+html,
+body {
+
+margin: 0;
+
+width: 100%;
+height: 100%;
+
+overflow: hidden;
+
+}
+
+body {
+
+background:
+radial-gradient(
+circle at center,
+#42001f,
+#080005 70%
+);
+
+color: #ffd6e5;
+
+font-family:
+"Courier New",
+monospace;
+
+}
+
+
+/* Центральный блок */
+
+.container {
+
+width: 100%;
+height: 100%;
+
+display: flex;
+
+align-items: center;
+justify-content: center;
+
+text-align: center;
+
+padding: 25px;
+
+}
+
+
+.content {
+
+max-width: 800px;
+
+position: relative;
+
+z-index: 5;
+
+}
+
+
+/* LOVE.exe */
+
+.logo {
+
+font-size:
+clamp(40px, 9vw, 90px);
+
+font-weight: bold;
+
+letter-spacing: 6px;
+
+color: #ff4f91;
+
+text-shadow:
+
+0 0 10px #ff0055,
+
+0 0 25px #ff0055,
+
+0 0 50px #ff0055;
+
+animation:
+pulse 2s infinite;
+
+}
+
+
+@keyframes pulse {
+
+0%,
+100% {
+
+transform:
+scale(1);
+
+}
+
+50% {
+
+transform:
+scale(1.06);
+
+}
+
+}
+
+
+/* Сердце */
+
+.main-heart {
+
+margin-top: 30px;
+
+font-size:
+clamp(60px, 15vw, 130px);
+
+animation:
+heartbeat 1.5s infinite;
+
+filter:
+
+drop-shadow(
+0 0 10px #ff0055
+)
+
+drop-shadow(
+0 0 30px #ff0055
+);
+
+}
+
+
+@keyframes heartbeat {
+
+0%,
+100% {
+
+transform:
+scale(1);
+
+}
+
+50% {
+
+transform:
+scale(1.18);
+
+}
+
+}
+
+
+/* Имя */
+
+.name {
+
+margin-top: 15px;
+
+font-size:
+clamp(25px, 5vw, 45px);
+
+color: #ff6fa5;
+
+text-shadow:
+
+0 0 10px #ff0055,
+
+0 0 25px #ff0055;
+
+}
+
+
+/* Сообщение */
+
+.message {
+
+margin-top: 30px;
+
+font-size:
+clamp(16px, 3vw, 23px);
+
+line-height: 1.8;
+
+color: #ffe1eb;
+
+white-space: pre-wrap;
+
+}
+
+
+/* Поделиться */
+
+.share {
+
+margin-top: 35px;
+
+padding: 14px 25px;
+
+border: 1px solid #ff4f91;
+
+border-radius: 10px;
+
+background:
+rgba(255, 0, 80, .1);
+
+color: #ff9fc4;
+
+font-family:
+"Courier New",
+monospace;
+
+cursor: pointer;
+
+transition: .2s;
+
+}
+
+
+.share:hover {
+
+background:
+rgba(255, 0, 80, .25);
+
+box-shadow:
+0 0 20px
+rgba(255, 0, 100, .5);
+
+}
+
+
+/* Летающие сердца */
+
+.heart {
+
+position: fixed;
+
+bottom: -80px;
+
+pointer-events: none;
+
+color: #ff4f91;
+
+text-shadow:
+
+0 0 8px #ff0055,
+
+0 0 20px #ff0055;
+
+animation:
+fly linear forwards;
+
+}
+
+
+@keyframes fly {
+
+from {
+
+transform:
+translateY(0)
+translateX(0)
+rotate(0deg);
+
+opacity: 0;
+
+}
+
+10% {
+
+opacity: 1;
+
+}
+
+to {
+
+transform:
+translateY(-120vh)
+translateX(var(--x))
+rotate(360deg);
+
+opacity: 0;
+
+}
+
+}
+
+
+/* Мобильные устройства */
+
+@media(max-width:600px) {
+
+.message {
+
+line-height: 1.6;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<div class="content">
+
+<div class="logo">
+LOVE.exe
+</div>
+
+
+<div
+class="main-heart"
+id="heart"
+>
+❤️
+</div>
+
+
+<div
+class="name"
+id="name"
+>
+Для тебя
+</div>
+
+
+<div
+class="message"
+id="message"
+>
+Кто-то отправил тебе
+кое-что особенное ❤️
+</div>
+
+
+<button
+class="share"
+id="share"
+>
+♥ ПОДЕЛИТЬСЯ
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* Получаем данные из URL */
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+
+const name =
+params.get("name");
+
+const message =
+params.get("message");
+
+const style =
+params.get("style");
+
+
+/* Элементы */
+
+const nameElement =
+document.getElementById("name");
+
+const messageElement =
+document.getElementById("message");
+
+const heartElement =
+document.getElementById("heart");
+
+
+/* Имя */
+
+if (name) {
+
+nameElement.textContent =
+"Для " + name;
+
+}
+
+
+/* Сообщение */
+
+if (message) {
+
+messageElement.textContent =
+message;
+
+}
+
+
+/* Стили */
+
+if (style === "romantic") {
+
+document.body.style.background =
+"radial-gradient(circle, #4b1028, #120006 70%)";
+
+heartElement.textContent =
+"💗";
+
+}
+
+
+if (style === "galaxy") {
+
+document.body.style.background =
+"radial-gradient(circle, #35105e, #05000d 70%)";
+
+heartElement.textContent =
+"💜";
+
+}
+
+
+if (style === "console") {
+
+document.body.style.background =
+"#020802";
+
+document.body.style.color =
+"#55ff88";
+
+heartElement.textContent =
+"♥";
+
+heartElement.style.filter =
+"drop-shadow(0 0 10px #00ff55)";
+
+}
+
+
+/* Летающие сердца */
+
+const hearts = [
+"♥",
+"♡",
+"❤",
+"💗",
+"💖",
+"💕",
+"💘"
+];
+
+
+function createHeart() {
+
+const heart =
+document.createElement("div");
+
+heart.className =
+"heart";
+
+heart.textContent =
+hearts[
+Math.floor(
+Math.random() *
+hearts.length
+)
+];
+
+heart.style.left =
+Math.random() * 100 + "vw";
+
+heart.style.fontSize =
+15 +
+Math.random() * 35 +
+"px";
+
+heart.style.setProperty(
+"--x",
+(Math.random() * 200 - 100) +
+"px"
+);
+
+heart.style.animationDuration =
+5 +
+Math.random() * 6 +
+"s";
+
+document.body.appendChild(
+heart
+);
+
+
+setTimeout(
+() => heart.remove(),
+12000
+);
+
+}
+
+
+setInterval(
+createHeart,
+350
+);
+
+
+/* Кнопка поделиться */
+
+document
+.getElementById("share")
+.addEventListener(
+"click",
+async function() {
+
+try {
+
+await navigator.clipboard.writeText(
+window.location.href
+);
+
+this.textContent =
+"✓ ССЫЛКА СКОПИРОВАНА";
+
+setTimeout(
+() => {
+
+this.textContent =
+"♥ ПОДЕЛИТЬСЯ";
+
+},
+2000
+);
+
+}
+
+catch {
+
+alert(
+"Скопируй ссылку из адресной строки ❤️"
+);
+
+}
+
+}
+);
+
+</script>
+
+</body>
+
+</html>
