@@ -581,7 +581,7 @@ previewName.style.textShadow =
 
 /* Создание страницы */
 
-createButton.addEventListener("click", function () {
+createButton.addEventListener("click", async function () {
 
 const name =
 nameInput.value.trim();
@@ -596,37 +596,82 @@ document
 
 
 if (!name) {
-
 alert("Сначала введи имя ❤️");
-
 nameInput.focus();
-
 return;
-
 }
-
 
 if (!message) {
-
 alert("Сначала напиши сообщение ❤️");
-
 messageInput.focus();
-
 return;
+}
+
+
+createButton.disabled = true;
+createButton.textContent =
+"СОЗДАЁМ СТРАНИЦУ...";
+
+
+try {
+
+const response = await fetch(
+"https://love-api.myrezerv018.workers.dev/api/create",
+{
+method: "POST",
+
+headers: {
+"Content-Type": "application/json"
+},
+
+body: JSON.stringify({
+name: name,
+message: message,
+style: selectedStyle
+})
+}
+);
+
+
+const data =
+await response.json();
+
+
+if (!response.ok) {
+
+throw new Error(
+data.error ||
+"Не удалось создать страницу"
+);
 
 }
 
 
-const url =
-"../page/?name=" +
-encodeURIComponent(name) +
-"&message=" +
-encodeURIComponent(message) +
-"&style=" +
-encodeURIComponent(selectedStyle);
+const pageUrl =
+"../page/?id=" +
+encodeURIComponent(data.id);
 
 
-window.location.href = url;
+window.location.href =
+pageUrl;
+
+}
+
+catch (error) {
+
+console.error(error);
+
+alert(
+"Не удалось создать страницу 😢\n\n" +
+"Попробуй ещё раз."
+);
+
+createButton.disabled = false;
+
+createButton.textContent =
+"♥ СОЗДАТЬ СТРАНИЦУ ♥";
+
+}
 
 });
 
