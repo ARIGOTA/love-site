@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOVE.exe</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #050005;
+        font-family: "Courier New", monospace;
+    }
+
+    body {
+        position: relative;
+    }
+
+    /* Неоновый фон */
+    .background {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(circle at center,
+                rgba(255, 0, 100, 0.16),
+                transparent 45%),
+            radial-gradient(circle at 20% 80%,
+                rgba(255, 20, 80, 0.08),
+                transparent 35%),
+            #050005;
+    }
+
+    /* Консоль */
+    .console {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(850px, 90%);
+        text-align: center;
+        color: #ff4f91;
+        text-shadow:
+            0 0 5px #ff0055,
+            0 0 15px #ff0055,
+            0 0 30px rgba(255, 0, 100, 0.7);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .title {
+        font-size: clamp(45px, 10vw, 100px);
+        font-weight: bold;
+        letter-spacing: 8px;
+        animation: pulse 2s infinite;
+    }
+
+    .subtitle {
+        margin-top: 15px;
+        font-size: clamp(12px, 2vw, 18px);
+        opacity: 0.8;
+    }
+
+    .terminal {
+        margin-top: 25px;
+        color: #ff8fba;
+        font-size: 13px;
+        line-height: 1.8;
+        opacity: 0.75;
+    }
+
+    .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background: #ff4f91;
+        animation: blink 0.8s infinite;
+    }
+
+    /* Сердца */
+    .heart {
+        position: fixed;
+        bottom: -80px;
+        user-select: none;
+        pointer-events: none;
+        z-index: 5;
+        animation:
+            fly linear forwards,
+            glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes fly {
+        0% {
+            transform:
+                translateY(0)
+                translateX(0)
+                rotate(0deg)
+                scale(0.4);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        50% {
+            transform:
+                translateY(-55vh)
+                translateX(var(--move))
+                rotate(var(--rotate))
+                scale(1);
+        }
+
+        100% {
+            transform:
+                translateY(-120vh)
+                translateX(calc(var(--move) * -1))
+                rotate(calc(var(--rotate) * 2))
+                scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    @keyframes glow {
+        from {
+            filter:
+                drop-shadow(0 0 3px #ff0055);
+        }
+
+        to {
+            filter:
+                drop-shadow(0 0 15px #ff0055)
+                drop-shadow(0 0 30px #ff4f91);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            text-shadow:
+                0 0 5px #ff0055,
+                0 0 15px #ff0055,
+                0 0 30px #ff0055;
+        }
+
+        50% {
+            transform: scale(1.04);
+            text-shadow:
+                0 0 10px #ff0055,
+                0 0 30px #ff0055,
+                0 0 60px #ff4f91;
+        }
+    }
+
+    @keyframes blink {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    /* Сканлайны */
+    .scanlines {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 20;
+        background: repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.015) 0px,
+            rgba(255,255,255,0.015) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+    }
+
+    /* Мобильная версия */
+    max-width: 600px {
+        .title {
+            letter-spacing: 4px;
+        }
+
+        .terminal {
+            font-size: 10px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="background
+
+
+></div>
+
+<div class="console">
+    <div class="title">LOVE.exe</div>
+
+    <div class="subtitle">
+        connection established ♥
+    </div>
+
+    <div class="terminal">
+        &gt; initializing feelings...
+
+        &gt; loading hearts... [████████████] 100%
+
+        &gt; love system activated
+
+        &gt; <span class="cursor"></span>
+    </div>
+</div>
+
+<div class="scanlines"></div>
+
+<script>
+
+const hearts = [
+    "♥",
+    "♡",
+    "❤",
+    "💗",
+    "💖",
+    "💘",
+    "💝",
+    "💕",
+    "❣",
+    "♥"
+];
+
+function createHeart() {
+
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+
+    heart.textContent =
+        hearts[Math.floor(Math.random() * hearts.length)];
+
+    const size =
+        Math.random() * 35 + 15;
+
+    const left =
+        Math.random() * 100;
+
+    const duration =
+        Math.random() * 5 + 5;
+
+    const move =
+        (Math.random() * 250 - 125) + "px";
+
+    const rotation =
+        (Math.random() * 80 - 40) + "deg";
+
+    heart.style.left = left + "%";
+    heart.style.fontSize = size + "px";
+    heart.style.animationDuration =
+        duration + "s";
+
+    heart.style.setProperty(
+        "--move",
+        move
+    );
+
+    heart.style.setProperty(
+        "--rotate",
+        rotation
+    );
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, duration * 1000);
+}
+
+/* Создание сердец */
+setInterval(createHeart, 180);
+
+/* Первые сердца сразу */
+for (let i = 0; i < 15; i++) {
+    setTimeout(
+        createHeart,
+        i * 150
+    );
+}
+
+</script>
+
+</body>
+</html>"
