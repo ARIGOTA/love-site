@@ -1371,78 +1371,69 @@ createHeart,
 ========================= */
 
 shareButton.addEventListener(
-"click",
+    "click",
 
-async function () {
+    async function () {
 
-const url =
-window.location.href;
+        const url =
+            window.location.href;
 
+        const isMobile =
+            /Android|iPhone|iPad|iPod/i.test(
+                navigator.userAgent
+            );
 
-try {
+        try {
 
-if (
-navigator.share
-) {
+            /* На телефоне открываем системное меню */
 
-await navigator.share(
-{
-title:
-"LOVE.exe ❤️",
+            if (
+                isMobile &&
+                navigator.share
+            ) {
 
-text:
-"Для тебя есть кое-что особенное ❤️",
+                await navigator.share({
+                    title: "LOVE.exe ❤️",
+                    text: "Для тебя есть кое-что особенное ❤️",
+                    url: url
+                });
 
-url:
-url
-}
-);
+                return;
+            }
 
+            /* На компьютере просто копируем ссылку */
 
-return;
-}
+            await navigator.clipboard.writeText(
+                url
+            );
 
+            this.textContent =
+                "✓ ССЫЛКА СКОПИРОВАНА";
 
-await navigator
-.clipboard
-.writeText(
-url
-);
+            setTimeout(() => {
 
+                this.textContent =
+                    "♥ ПОДЕЛИТЬСЯ";
 
-this.textContent =
-"✓ ССЫЛКА СКОПИРОВАНА";
+            }, 2000);
 
+        }
 
-setTimeout(
-() => {
+        catch (error) {
 
-this.textContent =
-"♥ ПОДЕЛИТЬСЯ";
+            console.error(
+                "SHARE ERROR:",
+                error
+            );
 
-},
+            prompt(
+                "Скопируй ссылку:",
+                url
+            );
 
-2000
-);
+        }
 
-}
-
-catch (error) {
-
-console.error(
-"SHARE ERROR:",
-error
-);
-
-
-prompt(
-"Скопируй ссылку:",
-url
-);
-
-}
-
-}
+    }
 );
 
 
