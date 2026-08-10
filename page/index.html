@@ -13,7 +13,11 @@ content="width=device-width, initial-scale=1.0"
 <title>LOVE.exe</title>
 
 <style>
-
+.sender {
+    margin-top: 18px;
+    font-size: 15px;
+    opacity: 0.75;
+}
 * {
 box-sizing: border-box;
 }
@@ -474,6 +478,10 @@ class="message"
 id="message"
 ></div>
 
+<div
+    class="sender"
+    id="sender"
+></div>
 
 <div
 class="status"
@@ -568,6 +576,9 @@ document.getElementById("name");
 
 const messageElement =
 document.getElementById("message");
+
+const senderElement =
+    document.getElementById("sender");
 
 const heartElement =
 document.getElementById("heart");
@@ -769,7 +780,63 @@ declined.slice(1)
 
 return declined.toLowerCase();
 }
+function declineSenderName(name) {
+    if (!name) return name;
 
+    const original = name.trim();
+    const lower = original.toLowerCase();
+
+    const exceptions = {
+        "любовь": "Любови",
+        "мария": "Марии",
+        "софия": "Софии",
+        "лилия": "Лилии",
+        "юлия": "Юлии",
+        "наталия": "Наталии",
+        "валерия": "Валерии",
+        "виктория": "Виктории",
+        "анастасия": "Анастасии",
+        "ксения": "Ксении",
+        "евгения": "Евгении",
+        "дарья": "Дарьи",
+        "наталья": "Натальи",
+        "татьяна": "Татьяны",
+        "полина": "Полины",
+        "алина": "Алины",
+        "анна": "Анны",
+        "елена": "Елены",
+        "ольга": "Ольги",
+        "ирина": "Ирины",
+        "екатерина": "Екатерины",
+        "александра": "Александры",
+        "вероника": "Вероники",
+        "карина": "Карины",
+        "илья": "Ильи",
+        "никита": "Никиты",
+        "данила": "Данилы",
+        "данил": "Данила"
+    };
+
+    if (exceptions[lower]) {
+        return exceptions[lower];
+    }
+
+    let declined = original;
+
+    if (lower.endsWith("а")) {
+        declined = original.slice(0, -1) + "ы";
+    } else if (lower.endsWith("я")) {
+        declined = original.slice(0, -1) + "и";
+    } else if (lower.endsWith("й")) {
+        declined = original.slice(0, -1) + "я";
+    } else if (lower.endsWith("ь")) {
+        declined = original.slice(0, -1) + "я";
+    } else if (/[бвгджзклмнпрстфхцчшщ]$/i.test(lower)) {
+        declined = original + "а";
+    }
+
+    return declined;
+}
 async function loadPage() {
 
 if (!id) {
@@ -822,6 +889,21 @@ nameElement.textContent =
 messageElement.textContent =
 data.message;
 
+if (data.sender === "anonymous") {
+
+    senderElement.textContent =
+        "От Анонима";
+
+} else if (data.sender) {
+
+    senderElement.textContent =
+        "От " + declineSenderName(data.sender);
+
+} else {
+
+    senderElement.textContent = "";
+
+}
 
 currentStyle =
 data.style ||
