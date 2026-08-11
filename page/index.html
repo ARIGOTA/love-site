@@ -909,23 +909,6 @@ function declineSenderName(name) {
 }
 async function loadPage() {
 
-    const views =
-    Number(data.views || 0);
-
-let viewsWord = "просмотров";
-
-if (views % 10 === 1 && views % 100 !== 11) {
-    viewsWord = "просмотр";
-} else if (
-    [2, 3, 4].includes(views % 10) &&
-    ![12, 13, 14].includes(views % 100)
-) {
-    viewsWord = "просмотра";
-}
-
-viewsElement.textContent =
-    "♡ " + views + " " + viewsWord;
-
 if (!id) {
 
 showError(
@@ -958,6 +941,22 @@ id
 const data =
 await response.json();
 
+const views =
+    Number(data.views || 0);
+
+let viewsWord = "просмотров";
+
+if (views % 10 === 1 && views % 100 !== 11) {
+    viewsWord = "просмотр";
+} else if (
+    [2, 3, 4].includes(views % 10) &&
+    ![12, 13, 14].includes(views % 100)
+) {
+    viewsWord = "просмотра";
+}
+
+viewsElement.textContent =
+    "♡ " + views + " " + viewsWord;
 
 if (!response.ok) {
 
