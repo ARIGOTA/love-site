@@ -904,6 +904,23 @@ function declineSenderName(name) {
     return declined;
 }
 async function loadPage() {
+function getVisitorId() {
+    let visitorId =
+        localStorage.getItem("love_visitor_id");
+
+    if (!visitorId) {
+        visitorId = crypto.randomUUID();
+
+        localStorage.setItem(
+            "love_visitor_id",
+            visitorId
+        );
+    }
+
+    return visitorId;
+}
+
+const visitorId = getVisitorId();
 
 if (!id) {
 
@@ -923,15 +940,26 @@ statusElement.textContent =
 id.toUpperCase() +
 "...";
 
+let visitorId =
+    localStorage.getItem("loveVisitorId");
+
+if (!visitorId) {
+    visitorId = crypto.randomUUID();
+
+    localStorage.setItem(
+        "loveVisitorId",
+        visitorId
+    );
+}
 
 const response =
-await fetch(
-API_URL +
-"/api/page/" +
-encodeURIComponent(
-id
-)
-);
+    await fetch(
+        API_URL +
+        "/api/page/" +
+        encodeURIComponent(id) +
+        "?visitor=" +
+        encodeURIComponent(visitorId)
+    );
 
 
 const data =
