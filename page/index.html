@@ -19,6 +19,22 @@ content="width=device-width, initial-scale=1.0"
     rel="stylesheet"
 >
 <style>
+
+.like-button {
+    min-width: 90px;
+}
+
+.like-button.liked {
+    background: rgba(255, 30, 120, 0.18);
+    border-color: rgba(255, 60, 150, 0.75);
+
+    box-shadow:
+        0 0 12px rgba(255, 30, 120, 0.35),
+        0 0 25px rgba(255, 30, 120, 0.15);
+
+    transform: scale(1.03);
+}
+
 .views {
     margin-top: 10px;
     font-family: "Comfortaa", sans-serif;
@@ -557,6 +573,14 @@ id="status"
 <div class="actions">
 
 <button
+    class="action-button like-button"
+    id="likeButton"
+    type="button"
+>
+    ♡ <span id="likeCount">0</span>
+</button>
+
+<button
 class="action-button"
 id="share"
 >
@@ -651,6 +675,12 @@ document.getElementById("status");
 
 const viewsElement =
     document.getElementById("views");
+
+const likeButton =
+    document.getElementById("likeButton");
+
+const likeCount =
+    document.getElementById("likeCount");
 
 const shareButton =
 document.getElementById("share");
@@ -967,6 +997,17 @@ await response.json();
 
 const views =
     Number(data.views || 0);
+
+likeCount.textContent =
+    Number(data.likes || 0);
+
+if (data.liked) {
+    likeButton.classList.add("liked");
+    likeButton.firstChild.textContent = "♥ ";
+} else {
+    likeButton.classList.remove("liked");
+    likeButton.firstChild.textContent = "♡ ";
+}
 
 let viewsWord = "просмотров";
 
@@ -1475,7 +1516,78 @@ createHeart,
 350
 );
 
+likeButton.addEventListener("click", async function () {
 
+    const visitorId =
+        localStorage.getItem("loveVisitorId");
+
+    if (!visitorId || !id) {
+        return;
+    }
+
+    likeButton.disabled = true;
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/api/like/" +
+                encodeURIComponent(id),
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        visitorId: visitorId
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Like error"
+            );
+        }
+
+        likeCount.textContent =
+            data.likes;
+
+        if (data.liked) {
+
+            likeButton.classList.add("liked");
+
+            likeButton.firstChild.textContent =
+                "♥ ";
+
+        } else {
+
+            likeButton.classList.remove("liked");
+
+            likeButton.firstChild.textContent =
+                "♡ ";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "LIKE ERROR:",
+            error
+        );
+
+    } finally {
+
+        likeButton.disabled = false;
+    }
+
+});
+    
 /* =========================
 ПОДЕЛИТЬСЯ
 ========================= */
