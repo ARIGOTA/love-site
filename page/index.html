@@ -20,6 +20,78 @@ content="width=device-width, initial-scale=1.0"
 >
 <style>
 
+.stats-panel {
+    display: none;
+
+    margin: 22px auto 0;
+    width: min(420px, 92vw);
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(10, 0, 8, 0.94);
+
+    border:
+        1px solid rgba(255, 80, 150, 0.4);
+
+    box-shadow:
+        0 0 30px rgba(255, 0, 100, 0.18);
+
+    backdrop-filter: blur(12px);
+}
+
+.stats-panel.open {
+    display: block;
+}
+
+.stats-title {
+    margin-bottom: 16px;
+
+    font-size: 13px;
+    letter-spacing: 1.5px;
+
+    color: #ff9fc4;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stats-card {
+    padding: 16px 10px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stats-number {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stats-label {
+    margin-top: 6px;
+
+    font-size: 11px;
+    opacity: 0.6;
+}
+
+.stats-created {
+    margin-top: 16px;
+
+    font-size: 12px;
+    opacity: 0.7;
+}
+
 .like-button {
     min-width: 90px;
 }
@@ -581,11 +653,59 @@ id="status"
 </button>
 
 <button
+    class="action-button"
+    id="statsButton"
+    type="button"
+>
+    ◈ СТАТИСТИКА
+</button>
+
+<button
 class="action-button"
 id="share"
 >
 ♥ ПОДЕЛИТЬСЯ
 </button>
+
+<div
+    class="stats-panel"
+    id="statsPanel"
+>
+    <div class="stats-title">
+        ◈ СТАТИСТИКА СТРАНИЦЫ
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stats-card">
+            <div class="stats-number" id="statsViews">
+                0
+            </div>
+
+            <div class="stats-label">
+                Просмотры
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-number" id="statsLikes">
+                0
+            </div>
+
+            <div class="stats-label">
+                Лайки
+            </div>
+        </div>
+
+    </div>
+
+    <div class="stats-created">
+        Создано:
+        <span id="statsCreated">
+            —
+        </span>
+    </div>
+</div>
 
 <button
 class="action-button"
@@ -681,6 +801,21 @@ const likeButton =
 
 const likeCount =
     document.getElementById("likeCount");
+
+const statsButton =
+    document.getElementById("statsButton");
+
+const statsPanel =
+    document.getElementById("statsPanel");
+
+const statsViews =
+    document.getElementById("statsViews");
+
+const statsLikes =
+    document.getElementById("statsLikes");
+
+const statsCreated =
+    document.getElementById("statsCreated");
 
 const shareButton =
 document.getElementById("share");
@@ -934,6 +1069,7 @@ function declineSenderName(name) {
     return declined;
 }
 async function loadPage() {
+
 function getVisitorId() {
     let visitorId =
         localStorage.getItem("love_visitor_id");
@@ -1001,6 +1137,39 @@ const views =
 likeCount.textContent =
     Number(data.likes || 0);
 
+statsViews.textContent =
+    Number(data.views || 0);
+
+statsLikes.textContent =
+    Number(data.likes || 0);
+
+if (data.created_at) {
+
+    const createdDate =
+        new Date(
+            data.created_at.replace(
+                " ",
+                "T"
+            ) + "Z"
+        );
+
+    statsCreated.textContent =
+        createdDate.toLocaleDateString(
+            "ru-RU",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+} else {
+
+    statsCreated.textContent =
+        "—";
+
+}
+
 if (data.liked) {
     likeButton.classList.add("liked");
     likeButton.firstChild.textContent = "♥ ";
@@ -1031,7 +1200,6 @@ data.error ||
 );
 
 }
-
 
 nameElement.textContent =
     "Для " + declineName(data.name);
@@ -1587,7 +1755,34 @@ likeButton.addEventListener("click", async function () {
     }
 
 });
-    
+
+statsButton.addEventListener(
+    "click",
+    function () {
+
+        statsPanel.classList.toggle(
+            "open"
+        );
+
+        if (
+            statsPanel.classList.contains(
+                "open"
+            )
+        ) {
+
+            statsButton.textContent =
+                "× СКРЫТЬ СТАТИСТИКУ";
+
+        } else {
+
+            statsButton.textContent =
+                "◈ СТАТИСТИКА";
+
+        }
+
+    }
+);
+
 /* =========================
 ПОДЕЛИТЬСЯ
 ========================= */
